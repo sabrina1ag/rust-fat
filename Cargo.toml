@@ -1,0 +1,29 @@
+[package]
+name = "mini-fat32"
+version = "0.1.0"
+edition = "2021"
+authors = ["Mini-FAT32 Project"]
+
+[dependencies]
+# no_std compatible - using alloc crate from standard library
+
+[features]
+default = ["std"]
+std = []
+
+[dev-dependencies]
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+lto = true
+
+[lib]
+name = "mini_fat32"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mini-fat32"
+path = "src/main.rs"

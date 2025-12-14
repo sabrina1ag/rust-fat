@@ -1,5 +1,5 @@
 use crate::fs::FileSystemError;
-use crate::fs::fat_table::FatTable;
+use crate::fs::fat_table::FatTable; //on utilise fat table
 use alloc::vec::Vec;
 
 /// Cluster chain for traversing file/directory data
@@ -89,4 +89,3 @@ impl ClusterChain {
         (self.clusters.len() as u32) * cluster_size
     }
 }
-

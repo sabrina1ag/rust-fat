@@ -1,14 +1,14 @@
 use alloc::string::String;
 use alloc::vec::Vec;
 
-/// Path parsing error
+/// Erreurs Possibles lors du parsing d'un chemin
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PathError {
-    /// Invalid path format
+    /// chemin invalide
     InvalidFormat(String),
-    /// Empty path
+    /// chemon vide
     Empty,
-    /// Path component too long
+    /// nom de fichiers / dossiers trop long > 255 caracteres
     ComponentTooLong,
 }
 
@@ -22,22 +22,27 @@ impl core::fmt::Display for PathError {
     }
 }
 
-/// Path representation for FAT32 filesystem
+/// Représentation interne d’un chemin FAT32
+// Pour : 
+/// "/home/user/docs"
+/// -> absolute = true pck ya /
+/// -> components = ["home", "user", "docs"]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Path {
-    /// Path components (without separators)
+    /// les compostants du chemin 
+    /// /home/user -> ["home", "user"]
     components: Vec<String>,
-    /// Whether this is an absolute path (starts with /)
+    /// indique si le chemin commence par /
     absolute: bool,
 }
 
 impl Path {
-    /// Create a new path from a string
+    /// creer un path à partir d'une string
     pub fn new(path_str: &str) -> Result<Self, PathError> {
         if path_str.is_empty() {
             return Err(PathError::Empty);
         }
-        
+        // chemin absolu ?
         let absolute = path_str.starts_with('/');
         let path_str = if absolute { &path_str[1..] } else { path_str };
         
@@ -46,6 +51,7 @@ impl Path {
         } else {
             path_str
                 .split('/')
+                // "home/./docs" → ["home", "docs"]
                 .filter(|s| !s.is_empty() && *s != ".")
                 .map(|s| {
                     if s == ".." {
@@ -59,7 +65,7 @@ impl Path {
                 .collect()
         };
         
-        // Validate components
+        // Vérification finale des composants
         for component in &components {
             if component.is_empty() {
                 return Err(PathError::InvalidFormat("Empty component".into()));
@@ -75,7 +81,7 @@ impl Path {
         })
     }
     
-    /// Create root path
+    /// Creer chemin racine
     pub fn root() -> Self {
         Self {
             components: Vec::new(),
@@ -83,7 +89,7 @@ impl Path {
         }
     }
     
-    /// Check if path is absolute
+    /// /test = true , test = false
     pub fn is_absolute(&self) -> bool {
         self.absolute
     }
@@ -93,12 +99,14 @@ impl Path {
         self.absolute && self.components.is_empty()
     }
     
-    /// Get path components
+    /// /test/a donne ["test","a"]
     pub fn components(&self) -> &[String] {
         &self.components
     }
     
-    /// Join with another path
+    /// joindre deux chemins actuelle + en input
+    // actuelle /test other = docs/test.txt
+    // retoutne /test/docs/test.txt
     pub fn join(&self, other: &Path) -> Result<Self, PathError> {
         if other.is_absolute() {
             return Ok(other.clone());
@@ -107,7 +115,8 @@ impl Path {
         let mut new_components = self.components.clone();
         new_components.extend_from_slice(other.components());
         
-        // Resolve ".." components
+        // traiter les ..
+        // donc si test,user,..,source on aura en sortie test, source
         let mut resolved = Vec::new();
         for component in new_components {
             if component == ".." {
@@ -125,7 +134,7 @@ impl Path {
         })
     }
     
-    /// Get parent path
+    /// un dossier en arriere
     pub fn parent(&self) -> Option<Self> {
         if self.components.is_empty() {
             return None;
@@ -140,12 +149,12 @@ impl Path {
         })
     }
     
-    /// Get file name (last component)
+    /// derniere element = nom fichier
     pub fn file_name(&self) -> Option<&String> {
         self.components.last()
     }
     
-    /// Convert to string representation
+    /// Reconstruire le chemin en string
     pub fn to_string(&self) -> String {
         let mut result = String::new();
         if self.absolute {
@@ -161,40 +170,40 @@ impl Path {
     }
 }
 
-/// Owned path buffer
+/// Version mutable du path pour cd et pwd
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PathBuf {
     path: Path,
 }
 
 impl PathBuf {
-    /// Create a new PathBuf from a string
+     /// ex: PathBuf::new("/home/user")
     pub fn new(path_str: &str) -> Result<Self, PathError> {
         Ok(Self {
             path: Path::new(path_str)?,
         })
     }
     
-    /// Create root PathBuf
+    /// PathBuf representant "/"
     pub fn root() -> Self {
         Self {
             path: Path::root(),
         }
     }
     
-    /// Get path reference
+    /// Acces en lecture au path
     pub fn as_path(&self) -> &Path {
         &self.path
     }
     
-    /// Push a component onto the path
+    /// push("docs") sur "/home/user" → "/home/user/docs"
     pub fn push(&mut self, component: &str) -> Result<(), PathError> {
         let new_path = Path::new(component)?;
         self.path = self.path.join(&new_path)?;
         Ok(())
     }
     
-    /// Pop the last component
+    /// "/home/user/docs" → "/home/user"
     pub fn pop(&mut self) -> bool {
         if let Some(parent) = self.path.parent() {
             self.path = parent;
@@ -204,7 +213,7 @@ impl PathBuf {
         }
     }
     
-    /// Convert to string
+    /// Convertit en string
     pub fn to_string(&self) -> String {
         self.path.to_string()
     }

@@ -9,7 +9,7 @@ Projet Rust Agrane Sabrina 4SI3
 
 Manquant :  **Créer et écrire dans un fichier** - Non implémenté (nécessite modification de la FAT)
 
-## Contraintes respectes
+# Contraintes respectes
 
 -  **no_std** - Aucune dépendance sur la bibliothèque standard Rust, En dehors du main.rs pour avoir une CLI minimale
 -  **alloc** - Utilisation du crate `alloc` pour allocations dynamiques
@@ -17,7 +17,7 @@ Manquant :  **Créer et écrire dans un fichier** - Non implémenté (nécessite
 -  **Documentation** - Code documenté avec rustdoc
 -  **Sécurité** - Toute portion `unsafe` est documentée avec des commentaires de sécurité
 
-## 📂 Structure du projet
+# Structure du projet
 
 ```
 src/

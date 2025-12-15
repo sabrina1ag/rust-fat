@@ -50,7 +50,14 @@ fat32>
 
 # Les Images 
 
+# fat32v2.img
 
-<img width="1389" height="786" alt="image" src="https://github.com/user-attachments/assets/1b01b467-cb6d-4ee3-83b0-fec009ab01c5" />
+<img width="881" height="525" alt="Capture d&#39;écran 2025-12-15 232653" src="https://github.com/user-attachments/assets/26b32279-7a31-43b6-92db-8ed6b7e971b9" />
 
+# fat32.img
+
+Structure de fat32.img (minimale pour les tests)
+
+├── hello.txt
+├── subdir/
 

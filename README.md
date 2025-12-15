@@ -11,7 +11,7 @@ Manquant :  **Créer et écrire dans un fichier** - Non implémenté (nécessite
 
 # Contraintes respectes
 
--  **no_std** - Aucune dépendance sur la bibliothèque standard Rust, En dehors du main.rs pour avoir une CLI minimale
+-  **no_std** - Aucune dépendance sur la bibliothèque standard Rust, **Exception** En dehors du main.rs pour avoir une CLI minimale, et les fichiers tests
 -  **alloc** - Utilisation du crate `alloc` pour allocations dynamiques
 -  **Tests** - Tests unitaires et d'intégration inclus, il ya 3 erreurs non traité 
 -  **Documentation** - Code documenté avec rustdoc
@@ -36,3 +36,14 @@ tests/
   integration_fat.rs  # Tests d'intégration
   fat_test.rs
 ```
+# Tester 
+
+**Compiler avec support std**
+cargo build --features std --release
+
+**Utiliser la CLI**
+cargo run --features std -- <fat32_image>
+
+**ça affiche**
+fat32> 
+- on pourra alors tester ls, cat, cd, pwd

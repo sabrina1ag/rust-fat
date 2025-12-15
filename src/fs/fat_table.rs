@@ -1,5 +1,5 @@
 use crate::fs::FileSystemError;
-use alloc::vec::Vec;d
+use alloc::vec::Vec;
 
 /// FAT32 File Allocation Table
 pub struct FatTable {
@@ -75,4 +75,5 @@ impl FatTable {
         self.entries.len()
     }
 }
+
 

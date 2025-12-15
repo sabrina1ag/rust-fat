@@ -49,21 +49,8 @@ fat32>
 - on pourra alors tester ls, cat, cd, pwd
 
 # Les Images 
-Structure de fat32_test2.img (résolution de chemin, cat a partir d’un chemin avec dossier, 
 
-├── simple.txt
-├── A/
- │   └── B/
- │       └── C/
- │           └── deep.txt
-├── long_names/
-├── big_files/  **Je peux l’afficher mais pas le lire car dépasser 8 caractères (résolution supérieure pas prise en compte ) 
-│   ├── big1.bin       
-└── mixed/
-    └── D/
-       
-Structure de fat32.img (minimale pour les tests)
 
-├── hello.txt
-├── subdir/
+<img width="1389" height="786" alt="image" src="https://github.com/user-attachments/assets/1b01b467-cb6d-4ee3-83b0-fec009ab01c5" />
+
 

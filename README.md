@@ -13,7 +13,7 @@ Manquant :  **Créer et écrire dans un fichier** - Non implémenté (nécessite
 
 -  **no_std** - Aucune dépendance sur la bibliothèque standard Rust, En dehors du main.rs pour avoir une CLI minimale
 -  **alloc** - Utilisation du crate `alloc` pour allocations dynamiques
--  **Tests** - Tests unitaires et d'intégration inclus
+-  **Tests** - Tests unitaires et d'intégration inclus, il ya 3 erreurs non traité 
 -  **Documentation** - Code documenté avec rustdoc
 -  **Sécurité** - Toute portion `unsafe` est documentée avec des commentaires de sécurité
 

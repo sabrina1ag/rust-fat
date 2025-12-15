@@ -14,55 +14,57 @@ pub use directory::Directory;
 pub use entry::{DirEntry, DirectoryEntry, LongFileNameEntry};
 pub use path::{Path, PathBuf, PathError};
 
+// alloc en no_std
 use alloc::vec::Vec;
 use alloc::string::String;
 
-/// Main filesystem trait
+/// Le FileSystem doit savoir faire ça
 pub trait FileSystem {
-    /// List files and directories in the given path
+    // utilisé par ls, retourne contenu dossier ou code erreur
     fn list(&self, path: &str) -> Result<Vec<DirEntry>, FileSystemError>;
     
-    /// Read file contents from the given path
+    /// lire contenu fichier ou erreur si n'existe pas ou c'est pas un fichier
     fn read_file(&self, path: &str) -> Result<Vec<u8>, FileSystemError>;
     
-    /// Change current directory
+    /// Changer Repertoire courant, modifier la variable current_patj
     fn cd(&mut self, path: &str) -> Result<(), FileSystemError>;
     
-    /// Get current directory path
+    /// le chemin courant sous forme de string, ne peut pas echouer c'est un affichage
     fn pwd(&self) -> String;
     
-    /// Create a new file at the given path
+    /// pas utilisé vu que creation fichier ne marche pas :)
     fn create_file(&mut self, path: &str) -> Result<(), FileSystemError>;
     
-    /// Write data to a file at the given path
+    /// pas utilisé vu que ecrire dans un fichier ne marche pas :)
     fn write_file(&mut self, path: &str, data: &[u8]) -> Result<(), FileSystemError>;
 }
 
-/// Filesystem errors
+/// Toutes les erreurs possibles du FS
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FileSystemError {
-    /// Invalid path
+    /// Erreurs Logiques 
+
     InvalidPath(String),
-    /// File not found
+
     FileNotFound(String),
-    /// Directory not found
+    
     DirectoryNotFound(String),
-    /// Invalid FAT structure
+ 
     InvalidFat(String),
-    /// Invalid boot sector
+   
     InvalidBootSector(String),
-    /// Cluster chain error
+
     ClusterChainError(String),
-    /// Directory entry error
+  
     DirectoryEntryError(String),
-    /// I/O error
+    /// Erreur pures IO et Unsupported
     IoError(String),
-    /// Out of memory
+    
     OutOfMemory,
-    /// Unsupported feature
+    
     Unsupported(String),
 }
-
+// utile pour CLI pour faire println(, error)
 impl core::fmt::Display for FileSystemError {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
@@ -79,7 +81,7 @@ impl core::fmt::Display for FileSystemError {
         }
     }
 }
-
+// meme si path::new retourne patherror, on le convertit en filesystem error
 impl From<PathError> for FileSystemError {
     fn from(err: PathError) -> Self {
         let msg = match err {

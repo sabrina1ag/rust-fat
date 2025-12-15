@@ -1,7 +1,7 @@
 use crate::fs::FileSystemError;
 
 /// FAT32 Boot Sector, reproduire le boot sector
-/// Complete structure as per FAT32 specification
+
 #[repr(C, packed)]
 pub struct BootSector { //structure qui represente les donnees au debut du fat
     /// Jump instruction (3 bytes)
@@ -65,13 +65,13 @@ pub struct BootSector { //structure qui represente les donnees au debut du fat
 }
 
 impl BootSector { //lire les 512 premiers octect 
-    /// Parse boot sector from raw bytes
+    
     /// 
-    /// # Safety
+    /// # Documentation d'une fonction Unsafe
     /// 
-    /// This function uses unsafe to transmute bytes into the BootSector struct.
-    /// It is safe if the input slice is exactly 512 bytes and contains valid
-    /// FAT32 boot sector data. The packed representation ensures correct alignment.
+    /// c'est unsafe car on transmet des octets dans le boot sector et on est pas sure a 100 que c'est exactement les données du boot sector
+
+    /// c'est safe si en input c'est EXACTEMENT 512 o et les données sont bien celle du boot sector
     /// The caller must ensure the data is valid FAT32 boot sector data.
     pub unsafe fn from_bytes(data: &[u8]) -> Result<Self, FileSystemError> {
         if data.len() < 512 { // verifier qu'on a bien au moins 512o
@@ -103,42 +103,42 @@ impl BootSector { //lire les 512 premiers octect
         Ok(bs) // tout est good on renvoi notre boot sector
     }
     
-    /// Get bytes per sector
+    
     pub fn bytes_per_sector(&self) -> u32 {
         self.bytes_per_sector as u32
     }
     
-    /// Get sectors per cluster
+    
     pub fn sectors_per_cluster(&self) -> u32 {
         self.sectors_per_cluster as u32
     }
     
-    /// Get cluster size in bytes
+    
     pub fn cluster_size(&self) -> u32 {
         self.bytes_per_sector() * self.sectors_per_cluster()
     }
     
-    /// Get FAT start sector (reserved sectors)
+   
     pub fn fat_start_sector(&self) -> u32 {
         self.reserved_sector_count as u32
     }
     
-    /// Get data area start sector
+ 
     pub fn data_start_sector(&self) -> u32 {
         self.fat_start_sector() + (self.sectors_per_fat_32 * self.num_fats as u32)
     }
     
-    /// Get root cluster number
+    
     pub fn root_cluster(&self) -> u32 {
         self.root_cluster
     }
     
-    /// Get sectors per FAT (32-bit)
+    
     pub fn sectors_per_fat(&self) -> u32 {
         self.sectors_per_fat_32
     }
     
-    /// Get number of FATs
+    
     pub fn num_fats(&self) -> u8 {
         self.num_fats
     }

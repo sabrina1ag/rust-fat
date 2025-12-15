@@ -14,11 +14,10 @@ pub struct FatTable {
 impl FatTable {
     /// Parse FAT table from raw bytes
     /// 
-    /// # Safety
+    /// # Documentation d'une fonction Unsafe
     /// 
-    /// The data must be valid FAT32 table data. Each entry is 4 bytes (32-bit),
-    /// but only the lower 28 bits are used. The caller must ensure the data
-    /// is properly aligned and contains valid FAT entries.
+    /// La data doit etre valide FAT32 data de 32bit. 
+    /// on utilise pas les 4 premiers bits et on doit s'assurer de l'alignement avec de call cette fonction
     pub unsafe fn from_bytes(data: &[u8]) -> Result<Self, FileSystemError> { //remplir le tableau FatTable à partir de bits bruts
         if data.len() % 4 != 0 {
             return Err(FileSystemError::InvalidFat("FAT table size must be multiple of 4".into()));
@@ -28,8 +27,7 @@ impl FatTable {
         entries.reserve(data.len() / 4);
         
         for chunk in data.chunks_exact(4) {
-            // FAT32 entries are 32-bit, but only 28 bits are used
-            // Mask upper 4 bits
+            // FAT32 32 bits mais on utilise 24 donc masquer les 4 premiers
             let entry = u32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]) & 0x0FFF_FFFF;
             entries.push(entry);
         }
@@ -37,9 +35,8 @@ impl FatTable {
         Ok(Self { entries })
     }
     
-    /// Get FAT entry for a cluster
-    /// 
-    /// Returns the next cluster in the chain, or an end-of-chain marker
+   
+    /// prochain cluster ou valeur de fin de chaine
     pub fn get_entry(&self, cluster: u32) -> Result<u32, FileSystemError> {
         if cluster as usize >= self.entries.len() { //numero du cluster qu'on veut tester, self.entries vecteur de toutes les entrées FAT
             return Err(FileSystemError::InvalidFat("Cluster out of FAT bounds".into()));
@@ -48,7 +45,7 @@ impl FatTable {
         Ok(self.entries[cluster as usize])
     }
     
-    /// Check if cluster is end of chain
+    /// cluster = fin de chaine ?
     pub fn is_end_of_chain(&self, cluster: u32) -> bool { 
         if cluster as usize >= self.entries.len() { // usize pour pouvoir l'utiliser en index
             return true;
@@ -65,7 +62,7 @@ impl FatTable {
         self.entries[cluster as usize] == 0x0FFFFFF7
     }
     
-    /// Check if cluster is free
+    /// cluster = free ?
     pub fn is_free_cluster(&self, cluster: u32) -> bool {
         if cluster as usize >= self.entries.len() {
             return false;
@@ -73,7 +70,7 @@ impl FatTable {
         self.entries[cluster as usize] == 0
     }
     
-    /// Get number of entries in FAT
+    /// nb entrée en FAT
     pub fn len(&self) -> usize {
         self.entries.len()
     }

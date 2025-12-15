@@ -1,6 +1,6 @@
 # rust-fat
 Projet Rust Agrane Sabrina 4SI3
-
+4 actions possibles : 
 - **(`ls`)** - Liste les fichiers et répertoires d'un chemin donné
 - **(`cat`)** - Lit le contenu d'un fichier à partir d'un chemin absolu ou relatif
 - **(`cd`)** - Changer repertoire 
@@ -11,7 +11,7 @@ Manquant :  **Créer et écrire dans un fichier** - Non implémenté (nécessite
 
 # Contraintes respectes
 
--  **no_std** - Aucune dépendance sur la bibliothèque standard Rust, **Exception** En dehors du main.rs pour avoir une CLI minimale, et les fichiers tests
+-  **no_std** - Aucune dépendance sur la bibliothèque standard Rust, **Exception** En dehors du **main.rs** pour avoir une CLI minimale, et les fichiers tests 
 -  **alloc** - Utilisation du crate `alloc` pour allocations dynamiques
 -  **Tests** - Tests unitaires et d'intégration inclus, il ya 3 erreurs non traité 
 -  **Documentation** - Code documenté avec rustdoc
@@ -31,14 +31,14 @@ src/
     cluster.rs         # Gestion des chaînes de clusters
     directory.rs       # Gestion des répertoires
     entry.rs           # Entrées de répertoire (short/long names)
-    path.rs            # Résolution de chemins
+    path.rs            # Résolution de chemins (absolu, .. , fichiers, erreur system)
 tests/
   integration_fat.rs  # Tests d'intégration
   fat_test.rs
 ```
 # Tester 
 
-**Compiler avec support std**
+**Compiler avec support std pour la CLI**
 cargo build --features std --release
 
 **Utiliser la CLI**
@@ -47,3 +47,7 @@ cargo run --features std -- <fat32_image>
 **ça affiche**
 fat32> 
 - on pourra alors tester ls, cat, cd, pwd
+
+# Les Images 
+fat32.img : premiere image de test contient un fichier et un dossier
+fat32v2.img : version plus dense, une arboresence de dossiers complete, fichiers avec de longs contenu, 
